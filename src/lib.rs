@@ -1,7 +1,10 @@
 pub mod app;
 
 #[cfg(feature = "hydrate")]
-#[wasm_bindgen::prelude::wasm_bindgen]
+use wasm_bindgen::prelude::*;
+
+#[cfg(feature = "hydrate")]
+#[wasm_bindgen]
 pub fn hydrate() {
     use app::*;
     use leptos::*;

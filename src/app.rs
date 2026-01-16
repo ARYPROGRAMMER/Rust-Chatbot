@@ -8,14 +8,9 @@ pub fn App() -> impl IntoView {
     provide_meta_context();
 
     view! {
-        // injects a stylesheet into the document <head>
-        // id=leptos means cargo-leptos will hot-reload this stylesheet
-        <Stylesheet id="leptos" href="/pkg/{{project-name}}.css"/>
-
-        // sets the document title
+        <Stylesheet id="leptos" href="/pkg/rust-chatbot.css"/>
         <Title text="Welcome to Leptos"/>
 
-        // content for this welcome page
         <Router>
             <main>
                 <Routes>
@@ -24,10 +19,11 @@ pub fn App() -> impl IntoView {
                 </Routes>
             </main>
         </Router>
+        
+        <script type="module">"import init, { hydrate } from '/pkg/rust-chatbot.js'; init().then(hydrate);"</script>
     }
 }
 
-/// Renders the home page of your application.
 #[component]
 fn HomePage() -> impl IntoView {
     // Creates a reactive value to update the button
@@ -36,23 +32,17 @@ fn HomePage() -> impl IntoView {
 
     view! {
         <h1>"Welcome to Leptos!"</h1>
-        <button on:click=on_click>"Click Me: " {count}</button>
+        // Render the reactive value via a closure so it updates on change:
+        <button on:click=on_click>
+            "Click Me: " { move || count.get() }
+        </button>
     }
 }
 
-/// 404 - Not Found
 #[component]
 fn NotFound() -> impl IntoView {
-    // set an HTTP status code 404
-    // this is feature gated because it can only be done during
-    // initial server-side rendering
-    // if you navigate to the 404 page subsequently, the status
-    // code will not be set because there is not a new HTTP request
-    // to the server
     #[cfg(feature = "ssr")]
     {
-        // this can be done inline because it's synchronous
-        // if it were async, we'd use a server function
         let resp = expect_context::<leptos_actix::ResponseOptions>();
         resp.set_status(actix_web::http::StatusCode::NOT_FOUND);
     }
