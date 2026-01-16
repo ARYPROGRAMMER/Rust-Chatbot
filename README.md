@@ -12,12 +12,34 @@ A full-stack web application built with [Leptos](https://leptos.dev/) and [Actix
 
 ## Prerequisites
 
-- [Rust](https://rustup.rs/) (stable)
+- [Rust](https://rustup.rs/) (nightly)
 - [cargo-leptos](https://github.com/leptos-rs/cargo-leptos): `cargo install cargo-leptos`
 - [wasm-bindgen-cli](https://rustwasm.github.io/wasm-bindgen/): `cargo install wasm-bindgen-cli`
 - WASM target: `rustup target add wasm32-unknown-unknown`
 
 ## Quick Start
+
+### Automated Setup (Recommended)
+
+**Windows (PowerShell):**
+
+```powershell
+.\scripts\setup.ps1
+```
+
+**Linux/macOS:**
+
+```bash
+chmod +x scripts/setup.sh && ./scripts/setup.sh
+```
+
+The setup script will:
+
+- Install Rust nightly toolchain
+- Add wasm32-unknown-unknown target
+- Install matching wasm-bindgen-cli version
+- Install cargo-leptos
+- Set up e2e test dependencies (if npm available)
 
 ### Option 1: Using cargo-leptos (Recommended)
 
@@ -36,7 +58,23 @@ cargo leptos build --release
 
 ### Option 2: Manual Build
 
-If cargo-leptos has issues, use these steps:
+If cargo-leptos has issues, use the build scripts:
+
+**Windows (PowerShell):**
+
+```powershell
+.\scripts\build.ps1
+.\target\debug\rust-chatbot.exe
+```
+
+**Linux/macOS:**
+
+```bash
+./scripts/build.sh
+./target/debug/rust-chatbot
+```
+
+Or run the commands manually:
 
 ```bash
 # 1. Build WASM
@@ -61,6 +99,11 @@ Then open http://127.0.0.1:3000
 
 ```
 rust-chatbot/
+├── scripts/
+│   ├── setup.ps1   # Windows setup script
+│   ├── setup.sh    # Unix setup script
+│   ├── build.ps1   # Windows build script
+│   └── build.sh    # Unix build script
 ├── src/
 │   ├── app.rs      # Main application component
 │   ├── lib.rs      # WASM hydration entry point
@@ -70,6 +113,7 @@ rust-chatbot/
 ├── assets/         # Static assets
 ├── end2end/        # Playwright e2e tests
 ├── Cargo.toml      # Dependencies and metadata
+├── rust-toolchain.toml  # Rust version specifier
 └── README.md
 ```
 
