@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  rust-chatbot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rust-chatbot:latest
+    container_name: rust-chatbot
+    ports:
+      - "3000:3000"
+    environment:
+      - LEPTOS_SITE_ROOT=/app/site
+      - LEPTOS_SITE_ADDR=0.0.0.0:3000
+      - RUST_LOG=info
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    # Resource limits (adjust as needed)
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 128M
+
+  # Optional: Add nginx reverse proxy for production
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: nginx-proxy
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  #   depends_on:
+  #     - rust-chatbot
+  #   restart: unless-stopped
+
+networks:
+  default:
+    name: rust-chatbot-network
+    driver: bridge

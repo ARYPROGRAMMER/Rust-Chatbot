@@ -1,0 +1,42 @@
+# Development Dockerfile with hot reload support
+# For development use only - not for production
+
+FROM rust:slim-bookworm
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libssl-dev \
+    curl \
+    wget \
+    binaryen \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Rust nightly toolchain and wasm target
+RUN rustup default nightly && \
+    rustup target add wasm32-unknown-unknown
+
+# Install cargo-leptos
+RUN cargo install cargo-leptos
+
+# Install dart-sass for SCSS compilation
+RUN ARCH=$(dpkg --print-architecture) && \
+    case "$ARCH" in \
+    amd64) SASS_ARCH="linux-x64" ;; \
+    arm64) SASS_ARCH="linux-arm64" ;; \
+    i386) SASS_ARCH="linux-ia32" ;; \
+    armhf) SASS_ARCH="linux-arm" ;; \
+    *) echo "Unsupported architecture: $ARCH" && exit 1 ;; \
+    esac && \
+    SASS_VERSION="1.69.5" && \
+    wget -qO- "https://github.com/sass/dart-sass/releases/download/${SASS_VERSION}/dart-sass-${SASS_VERSION}-${SASS_ARCH}.tar.gz" | tar xz -C /usr/local && \
+    ln -s /usr/local/dart-sass/sass /usr/local/bin/sass
+
+# Set working directory
+WORKDIR /app
+
+# Expose ports
+EXPOSE 3000 3001
+
+# Run cargo-leptos watch for hot reload
+CMD ["cargo", "leptos", "watch"]

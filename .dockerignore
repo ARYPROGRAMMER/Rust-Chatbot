@@ -1,0 +1,41 @@
+# Git
+.git
+.gitignore
+
+# Rust build artifacts
+target/
+!target/site/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Documentation
+README.md
+LICENSE
+*.md
+
+# End-to-end tests
+end2end/
+node_modules/
+
+# Scripts
+scripts/
+
+# Local environment
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp

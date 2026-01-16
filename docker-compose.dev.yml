@@ -1,0 +1,32 @@
+version: "3.8"
+
+# Development docker-compose with hot reload support
+services:
+  rust-chatbot-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: rust-chatbot:dev
+    container_name: rust-chatbot-dev
+    ports:
+      - "3000:3000"
+      - "3001:3001" # Reload port
+    environment:
+      - LEPTOS_SITE_ROOT=target/site
+      - LEPTOS_SITE_ADDR=0.0.0.0:3000
+      - LEPTOS_RELOAD_PORT=3001
+      - RUST_LOG=debug
+    volumes:
+      - .:/app
+      - cargo-cache:/usr/local/cargo/registry
+      - target-cache:/app/target
+    restart: unless-stopped
+
+volumes:
+  cargo-cache:
+  target-cache:
+
+networks:
+  default:
+    name: rust-chatbot-dev-network
+    driver: bridge
